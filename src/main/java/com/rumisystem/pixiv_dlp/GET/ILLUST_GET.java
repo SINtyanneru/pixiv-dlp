@@ -38,6 +38,7 @@ public class ILLUST_GET {
 					//画像のURL(_p0をページ番号におきかえている)
 					String ORIGIN_ILLUST_URL = BODY_JSON.get("urls").get("original").asText().replace("_p0", "_p" + I);
 
+					//ディレクトリを作成する
 					new DIR(AUTHOR_ID, ILLUST_ID);
 
 					//ページをダウンロード(分かりやすくファイルのページ番号を+1する)
