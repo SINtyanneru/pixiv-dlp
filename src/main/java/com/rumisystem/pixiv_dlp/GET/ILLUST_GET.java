@@ -2,6 +2,7 @@ package com.rumisystem.pixiv_dlp.GET;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rumisystem.pixiv_dlp.DIR;
 import com.rumisystem.pixiv_dlp.HTTP_REQUEST;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ public class ILLUST_GET {
 				int ILLUST_PAGE_COUNT = BODY_JSON.get("pageCount").asInt();
 				String ILLUST_C_DATE = BODY_JSON.get("createDate").asText();
 				String ILLUST_U_DATE = BODY_JSON.get("uploadDate").asText();
+				String AUTHOR_ID = BODY_JSON.get("userId").asText();
 
 				//適当に情報を吐く
 				System.out.println("┌──────────────────────────────────────────┐");
@@ -36,8 +38,10 @@ public class ILLUST_GET {
 					//画像のURL(_p0をページ番号におきかえている)
 					String ORIGIN_ILLUST_URL = BODY_JSON.get("urls").get("original").asText().replace("_p0", "_p" + I);
 
+					new DIR(AUTHOR_ID, ILLUST_ID);
+
 					//ページをダウンロード(分かりやすくファイルのページ番号を+1する)
-					new HTTP_REQUEST(ORIGIN_ILLUST_URL).DOWNLOAD((I + 1) + ".png");
+					new HTTP_REQUEST(ORIGIN_ILLUST_URL).DOWNLOAD("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/" + (I + 1) + ".png");
 				}
 				return true;
 			}else {

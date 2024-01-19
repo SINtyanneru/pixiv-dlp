@@ -24,6 +24,7 @@ public class HTTP_REQUEST {
 	//GET
 	public String GET(){
 		try{
+			System.out.println("[  ***  ]GET:" + REQIEST_URI.toString());
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -45,7 +46,7 @@ public class HTTP_REQUEST {
 			}
 
 			BR.close();
-
+			System.out.println("[  OK   ]GET");
 			return RES_STRING.toString();
 		}catch (Exception EX){
 			EX.printStackTrace();
@@ -57,6 +58,7 @@ public class HTTP_REQUEST {
 	//ダウンロード
 	public void DOWNLOAD(String PATH){
 		try{
+			System.out.println("[  ***  ]DOWNLOADING FILE:" + REQIEST_URI.toString());
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -79,6 +81,8 @@ public class HTTP_REQUEST {
 					OS.write(BUFFER, 0, BYTES_READ);
 				}
 			}
+
+			System.out.println("[  OK   ]DOWNLOADED!");
 		}catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);
