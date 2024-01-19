@@ -30,6 +30,15 @@ public class ILLUST_GET {
 				System.out.println("│ｻｸｾｲﾋﾞ    :" + ILLUST_C_DATE);
 				System.out.println("│ｺｳｼﾝﾋﾞ    :" + ILLUST_U_DATE);
 				System.out.println("└──────────────────────────────────────────┘");
+
+				//ページ枚数分回す
+				for(int I = 0; I < ILLUST_PAGE_COUNT; I++){
+					//画像のURL(_p0をページ番号におきかえている)
+					String ORIGIN_ILLUST_URL = BODY_JSON.get("urls").get("original").asText().replace("_p0", "_p" + I);
+
+					//ページをダウンロード(分かりやすくファイルのページ番号を+1する)
+					new HTTP_REQUEST(ORIGIN_ILLUST_URL).DOWNLOAD((I + 1) + ".png");
+				}
 				return true;
 			}else {
 				System.err.println("APIエラー「" + AJAX_RESULT_JSON.get("message").asText() + "」");

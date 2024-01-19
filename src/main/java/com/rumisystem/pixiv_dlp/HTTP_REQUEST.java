@@ -1,6 +1,8 @@
 package com.rumisystem.pixiv_dlp;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -49,6 +51,37 @@ public class HTTP_REQUEST {
 			EX.printStackTrace();
 			System.exit(1);
 			return null;
+		}
+	}
+
+	//ダウンロード
+	public void DOWNLOAD(String PATH){
+		try{
+			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
+
+			//GETリクエストだと主張する
+			HUC.setRequestMethod("GET");
+
+			//ヘッダーを入れる
+			HUC.setRequestProperty("Host", "i.pximg.net");
+			HUC.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+			HUC.setRequestProperty("Referer", "https://www.pixiv.net/");
+
+			//レスポンスコード
+			int RES_CODE = HUC.getResponseCode();
+			if(RES_CODE == HttpURLConnection.HTTP_OK){
+				//ファイルを保存する機構
+				InputStream IS = HUC.getInputStream();
+				FileOutputStream OS = new FileOutputStream(PATH);
+				byte[] BUFFER = new byte[4096];
+				int BYTES_READ;
+				while((BYTES_READ = IS.read(BUFFER)) != -1){
+					OS.write(BUFFER, 0, BYTES_READ);
+				}
+			}
+		}catch (Exception EX){
+			EX.printStackTrace();
+			System.exit(1);
 		}
 	}
 }
