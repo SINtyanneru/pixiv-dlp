@@ -22,10 +22,14 @@ public class Main {
 					System.out.println("[  ***  ]イラストをダウンロードします");
 
 					//イラストを取得しダウンロードする
-					ILLUST_GET.ILLUST_DOWNLOAD(ILLUST_ID);
+					boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ILLUST_ID);
 
 					//完了
-					System.out.println("[  OK   ]完了");
+					if(DOWNLOAD){
+						System.out.println("[  OK   ]完了");
+					}else {
+						System.out.println("[  ERR  ]ダウンロードできませんｄねｈすぃた");
+					}
 				}else {//ない
 					System.err.println("URLにIDがない");
 					System.exit(1);
