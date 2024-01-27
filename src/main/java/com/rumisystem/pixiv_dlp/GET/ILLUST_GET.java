@@ -33,10 +33,14 @@ public class ILLUST_GET {
 				System.out.println("│ｺｳｼﾝﾋﾞ    :" + ILLUST_U_DATE);
 				System.out.println("└──────────────────────────────────────────┘");
 
+				String AJAX_ILLUST_ALL_PAGE = new HTTP_REQUEST("https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "/pages?lang=ja").GET();
+				ObjectMapper ALL_PAGE_OBJ_MAPPER = new ObjectMapper();
+				JsonNode ILLUST_ALL_PAGE_JSON = ALL_PAGE_OBJ_MAPPER.readTree(AJAX_ILLUST_ALL_PAGE);
+
 				//ページ枚数分回す
 				for(int I = 0; I < ILLUST_PAGE_COUNT; I++){
 					//画像のURL(_p0をページ番号におきかえている)
-					String ORIGIN_ILLUST_URL = BODY_JSON.get("urls").get("original").asText().replace("_p0", "_p" + I);
+					String ORIGIN_ILLUST_URL = ILLUST_ALL_PAGE_JSON.get("body").get(I).get("urls").get("original").asText();
 
 					//ディレクトリを作成する
 					new DIR(AUTHOR_ID, ILLUST_ID);
