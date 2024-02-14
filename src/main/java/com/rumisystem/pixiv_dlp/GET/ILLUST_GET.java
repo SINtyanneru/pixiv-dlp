@@ -43,7 +43,7 @@ public class ILLUST_GET {
 					String ORIGIN_ILLUST_URL = ILLUST_ALL_PAGE_JSON.get("body").get(I).get("urls").get("original").asText();
 
 					//ディレクトリを作成する
-					new DIR(AUTHOR_ID, ILLUST_ID);
+					new DIR(AUTHOR_ID, ILLUST_ID, BODY_JSON);
 
 					//ページをダウンロード(分かりやすくファイルのページ番号を+1する)
 					new HTTP_REQUEST(ORIGIN_ILLUST_URL).DOWNLOAD("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/" + (I + 1) + ".png");
