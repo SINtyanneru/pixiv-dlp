@@ -65,18 +65,32 @@ public class HTTP_REQUEST {
 
 			//レスポンスコード
 			int RES_CODE = HUC.getResponseCode();
-			BufferedReader BR = new BufferedReader(new InputStreamReader(HUC.getInputStream(), StandardCharsets.UTF_8));
-			StringBuilder RES_STRING = new StringBuilder();
 
-			String INPUT_LINE;
-			while ((INPUT_LINE = BR.readLine()) != null){
-				RES_STRING.append(INPUT_LINE);
+			if(RES_CODE == 200){
+				BufferedReader BR = new BufferedReader(new InputStreamReader(HUC.getInputStream(), StandardCharsets.UTF_8));
+				StringBuilder RES_STRING = new StringBuilder();
+
+				String INPUT_LINE;
+				while ((INPUT_LINE = BR.readLine()) != null){
+					RES_STRING.append(INPUT_LINE);
+				}
+
+				BR.close();
+
+				LOG(0, "HTTP通信が完了しました");
+				return RES_STRING.toString();
+			} else if (RES_CODE == 429) {
+				//レートリミット、10秒感待ってから最実行する
+				LOG(2, "レートリミット！10秒間待機します...");
+				Thread.sleep(10000);
+
+				//再実行
+				return GET();
+			} else {
+				LOG(1, "エラー" + RES_CODE + "です、処理を終了します");
+				System.exit(1);
+				return null;
 			}
-
-			BR.close();
-
-			LOG(0, "HTTP通信が完了しました");
-			return RES_STRING.toString();
 		}catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);
@@ -109,6 +123,13 @@ public class HTTP_REQUEST {
 				while((BYTES_READ = IS.read(BUFFER)) != -1){
 					OS.write(BUFFER, 0, BYTES_READ);
 				}
+			} else if (RES_CODE == 429) {
+				//レートリミット、10秒感待ってから最実行する
+				LOG(2, "レートリミット！10秒間待機します...");
+				Thread.sleep(10000);
+
+				//再実行
+				DOWNLOAD(PATH);
 			}
 
 			LOG(0, "ダウンロードが完了しました");
