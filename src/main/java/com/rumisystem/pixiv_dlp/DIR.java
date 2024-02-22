@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.rumisystem.pixiv_dlp.Main.LOG;
+
 public class DIR {
 	public DIR(String AUTHOR_ID, String ILLUST_ID, JsonNode ILLUST_BODY_JSON){
 		try{
@@ -51,9 +53,9 @@ public class DIR {
 		if(!INDEX.exists()){
 			//作成
 			if(INDEX.createNewFile()){
-				System.out.println("index.jsonを作成しました");
+				LOG(2, "index.jsonを作成しました");
 			} else {//失敗
-				System.err.println("index.jsonの作成に失敗しました");
+				LOG(1, "index.jsonの作成に失敗しました");
 				System.exit(1);
 			}
 		}
@@ -100,9 +102,9 @@ public class DIR {
 		if(!INDEX.exists()){
 			//作成
 			if(INDEX.createNewFile()){
-				System.out.println("index.jsonを作成しました");
+				LOG(2, "index.jsonを作成しました");
 			} else {//失敗
-				System.err.println("index.jsonの作成に失敗しました");
+				LOG(1, "index.jsonの作成に失敗しました");
 				System.exit(1);
 			}
 		}
