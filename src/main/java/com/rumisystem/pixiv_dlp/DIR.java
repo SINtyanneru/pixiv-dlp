@@ -7,7 +7,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DIR {
 	public DIR(String AUTHOR_ID, String ILLUST_ID, JsonNode ILLUST_BODY_JSON){
@@ -115,6 +117,20 @@ public class DIR {
 		MAP.put("CREATE_DATE", BODY_JSON.get("createDate").asText());
 		MAP.put("UPLOAD_DATE", BODY_JSON.get("uploadDate").asText());
 		MAP.put("PAGE_COUNT", BODY_JSON.get("pageCount").asInt());
+
+		List<Object> TAG_LIST = new ArrayList<>();
+
+		for(JsonNode ROW:BODY_JSON.get("tags").get("tags")){
+			HashMap<String, String> TAG_INFO = new HashMap<>();
+
+			TAG_INFO.put("NAME", ROW.get("tag").asText());
+			TAG_INFO.put("ADD_USER", ROW.get("userId").asText());
+			TAG_INFO.put("LOCKED", ROW.get("locked").asText());
+
+			TAG_LIST.add(TAG_INFO);
+		}
+
+		MAP.put("TAG", TAG_LIST);
 
 		//MAPをString化
 		ObjectMapper OM = new ObjectMapper();
