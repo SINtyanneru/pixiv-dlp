@@ -8,6 +8,7 @@ import com.rumisystem.pixiv_dlp.HTTP_REQUEST;
 import java.util.Date;
 
 import static com.rumisystem.pixiv_dlp.Main.API_VERSION;
+import static com.rumisystem.pixiv_dlp.Main.LOG;
 
 public class ILLUST_GET {
 	public static boolean ILLUST_DOWNLOAD(String ILLUST_ID){
@@ -26,12 +27,12 @@ public class ILLUST_GET {
 				String AUTHOR_ID = BODY_JSON.get("userId").asText();
 
 				//適当に情報を吐く
-				System.out.println("┌──────────────────────────────────────────┐");
-				System.out.println("│ﾀｲﾄﾙ      :" + ILLUST_TITLE);
-				System.out.println("│ﾍﾟｰｼﾞ     :" + ILLUST_PAGE_COUNT);
-				System.out.println("│ｻｸｾｲﾋﾞ    :" + ILLUST_C_DATE);
-				System.out.println("│ｺｳｼﾝﾋﾞ    :" + ILLUST_U_DATE);
-				System.out.println("└──────────────────────────────────────────┘");
+				LOG(2, "┌──────────────────────────────────────────┐");
+				LOG(2, "│ﾀｲﾄﾙ      :" + ILLUST_TITLE);
+				LOG(2, "│ﾍﾟｰｼﾞ     :" + ILLUST_PAGE_COUNT);
+				LOG(2, "│ｻｸｾｲﾋﾞ    :" + ILLUST_C_DATE);
+				LOG(2, "│ｺｳｼﾝﾋﾞ    :" + ILLUST_U_DATE);
+				LOG(2, "└──────────────────────────────────────────┘");
 
 				String AJAX_ILLUST_ALL_PAGE = new HTTP_REQUEST("https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "/pages?lang=ja").GET();
 				ObjectMapper ALL_PAGE_OBJ_MAPPER = new ObjectMapper();
@@ -50,7 +51,7 @@ public class ILLUST_GET {
 				}
 				return true;
 			}else {
-				System.err.println("APIエラー「" + AJAX_RESULT_JSON.get("message").asText() + "」");
+				LOG(1, "APIエラー「" + AJAX_RESULT_JSON.get("message").asText() + "」");
 				return false;
 			}
 		}catch (Exception EX){

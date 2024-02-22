@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.rumisystem.pixiv_dlp.Main.LOG;
+
 public class HTTP_REQUEST {
 	private URL REQIEST_URI = null;
 
@@ -32,7 +34,7 @@ public class HTTP_REQUEST {
 	//GET
 	public String GET(){
 		try{
-			System.out.println("[  ***  ]GET:" + REQIEST_URI.toString());
+			LOG(3, REQIEST_URI.toString() + "に対してGETリクエストを送信");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -72,7 +74,8 @@ public class HTTP_REQUEST {
 			}
 
 			BR.close();
-			System.out.println("[  OK   ]GET");
+
+			LOG(0, "HTTP通信が完了しました");
 			return RES_STRING.toString();
 		}catch (Exception EX){
 			EX.printStackTrace();
@@ -84,7 +87,7 @@ public class HTTP_REQUEST {
 	//ダウンロード
 	public void DOWNLOAD(String PATH){
 		try{
-			System.out.println("[  ***  ]DOWNLOADING FILE:" + REQIEST_URI.toString());
+			LOG(3, REQIEST_URI.toString() + "をダウンロードします。。。");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -108,7 +111,7 @@ public class HTTP_REQUEST {
 				}
 			}
 
-			System.out.println("[  OK   ]DOWNLOADED!");
+			LOG(0, "ダウンロードが完了しました");
 		}catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);

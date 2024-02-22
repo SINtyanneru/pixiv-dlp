@@ -12,51 +12,110 @@ public class Main {
 	public static void main(String[] args) throws JsonProcessingException {
 		//引数があるか
 		if(args.length != 0){
-			String USER_INPUT_URL = args[0];
+			String DOWNLOAD_URL = "";				//ダウンロード先URL
+			int DOWNLOAD_TYPE = 0;					//なにをDLするか(1:イラスト/2:ブックマーク)
+			boolean HIDE = false;
 
-			//URLはPixivか
-			if(USER_INPUT_URL.startsWith("https://www.pixiv.net/")){
-				//イラストのURL
-				if(USER_INPUT_URL.startsWith("https://www.pixiv.net/artworks/")){
-					//イラストのIDがあるか
-					if(USER_INPUT_URL.split("/").length == 5){
-						String ILLUST_ID = USER_INPUT_URL.split("/")[4];//イラストのID
+			//引数を全て読む
+			for(String ARG:args){
+				//URL
+				if(ARG.startsWith("https://www.pixiv.net/")){
+					//URLをセット
+					DOWNLOAD_URL = ARG;
 
-						//ダウンロード中
-						System.out.println("[  ***  ]イラストをダウンロードします");
+					//なにをダウンロードするか
+					if(Pattern.matches("https://www.pixiv.net/artworks/\\d+", ARG)){
+						//イラスト
+						DOWNLOAD_TYPE = 1;
+					} else if(Pattern.matches("https://www.pixiv.net/users/\\d+/bookmarks/artworks", ARG)){
+						//ブックマーク
+						DOWNLOAD_TYPE = 2;
+					}
+				} else if(ARG.startsWith("--")){//設定
+					//非公開を取得
+					if(ARG.equals("--hide")){
+						HIDE = true;
+					}
+				}
+			}
+
+			//実行する
+			switch (DOWNLOAD_TYPE){
+				case 1:{
+					if(DOWNLOAD_URL.split("/").length == 5){
+						String ILLUST_ID = DOWNLOAD_URL.split("/")[4];//イラストのID
 
 						//イラストを取得しダウンロードする
 						boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ILLUST_ID);
 
 						//完了
 						if(DOWNLOAD){
-							System.out.println("[  OK   ]完了");
+							LOG(0, "すべての仕事が完了しました");
+							System.exit(0);
 						}else {
-							System.out.println("[  ERR  ]ダウンロードできませんｄねｈすぃた");
+							LOG(1, "ダウンロードに失敗しました");
+							System.exit(1);
 						}
-					}else {//ない
-						System.err.println("URLにIDがない");
+					} else {
+						LOG(1, "IDをセットしてください");
 						System.exit(1);
 					}
-				}else if(Pattern.matches("https://www.pixiv.net/users/\\d+/bookmarks/artworks", USER_INPUT_URL)){
-					String UID = USER_INPUT_URL.split("/")[4];//イラストのID
+					break;
+				}
+
+				case 2:{
+					String UID = DOWNLOAD_URL.split("/")[4];//イラストのID
 
 					//イラストを取得しダウンロードする
-					boolean DOWNLOAD = BOOKMARK_GET.BOOKMARK_ILLUST_DOWNLOAD(UID);
+					boolean DOWNLOAD = BOOKMARK_GET.BOOKMARK_ILLUST_DOWNLOAD(UID, HIDE);
 
 					//完了
 					if(DOWNLOAD){
-						System.out.println("[  OK   ]完了");
+						LOG(0, "すべての仕事が完了しました");
+						System.exit(0);
 					}else {
-						System.out.println("[  ERR  ]ダウンロードできませんｄねｈすぃた");
+						LOG(1, "ダウンロードに失敗しました");
+						System.exit(1);
 					}
+					break;
 				}
-			}else {//ちがう
-				System.err.println("PixivのURLを貼れ");
-				System.exit(1);
+
+				default:{
+					LOG(2, "??????????????");
+					System.exit(255);
+				}
 			}
-		}else {
-			System.out.println("引数のURLを");
+		} else {
+			HELP();
+		}
+	}
+
+	public static void HELP(){
+		System.out.println("Pixiv-dlp V1.0");
+		System.out.println("制作：るみ/八木 瑠海 伸梧");
+	}
+
+	public static void LOG(int LEVEL, String TEXT){
+		switch (LEVEL){
+			case 0:{
+				System.out.println("[  \u001B[32mOK\u001B[0m    ]" + TEXT);
+				break;
+			}
+
+			case 1:{
+				System.out.println("[  \u001B[31mERR\u001B[0m   ]" + TEXT);
+				break;
+			}
+
+			case 2:{
+				System.out.println("[  INFO  ]" + TEXT);
+				break;
+			}
+
+			case 3:{
+				System.out.println("[  ***   ]" + TEXT);
+				break;
+			}
 		}
 	}
 }

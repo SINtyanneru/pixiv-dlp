@@ -5,14 +5,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.pixiv_dlp.HTTP_REQUEST;
 
+import static com.rumisystem.pixiv_dlp.Main.LOG;
+
 public class BOOKMARK_GET {
-	public static boolean BOOKMARK_ILLUST_DOWNLOAD(String UID) throws JsonProcessingException {
+	public static boolean BOOKMARK_ILLUST_DOWNLOAD(String UID, boolean HIDE_BOOKMARK) throws JsonProcessingException {
 		try{
 			int OFFSET = 0;
-			int LIMIT = 0;
+			int LIMIT = 48;
 			boolean LOOP = true;
+
+			//ブックマークの種類
+			String REST = "show";
+
+			//非公開のをダウンロードするか
+			if(HIDE_BOOKMARK){
+				REST = "hide";
+			}
+
 			while (LOOP){
-				String AJAX_RESULT = new HTTP_REQUEST("https://www.pixiv.net/ajax/user/" + UID + "/illusts/bookmarks?tag=&offset=" + OFFSET + "&limit=" + LIMIT + "&rest=show&lang=ja").GET();
+				String AJAX_RESULT = new HTTP_REQUEST("https://www.pixiv.net/ajax/user/" + UID + "/illusts/bookmarks?tag=&offset=" + OFFSET + "&limit=" + LIMIT + "&rest=" + REST + "&lang=ja").GET();
 
 				ObjectMapper OBJ_MAPPER = new ObjectMapper();
 				JsonNode AJAX_RESULT_JSON = OBJ_MAPPER.readTree(AJAX_RESULT);
@@ -23,26 +34,32 @@ public class BOOKMARK_GET {
 						//ブックマークの中身を回す
 						for(int I = 0; I < LIMIT; I++){
 							JsonNode ROW = AJAX_RESULT_JSON.get("body").get("works").get(I);
-							System.out.println("ブックマークから：" + ROW.get("title").asText());
+							if(ROW != null){
+								LOG(3, "ブックマークからダウンロードします");
 
-							//イラストを取得しダウンロードする
-							boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ROW.get("id").asText());
-							//完了
-							if(DOWNLOAD){
-								System.out.println("[  OK   ]" + I + "個目おｋ");
+								//イラストを取得しダウンロードする
+								boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ROW.get("id").asText());
+								//完了
+								if(DOWNLOAD){
+									LOG(0, I + "個目おｋ");
 
-								//レートリミット対策、というか倫理的理由で1秒待つ
-								Thread.sleep(1000);
-							}else {
-								System.out.println("[  ERR  ]ダウンロードできませんでした");
-								return false;
+									//レートリミット対策、というか倫理的理由で1秒待つ
+									Thread.sleep(1000);
+								}else {
+									LOG(1, I + "ダウンロードできませんでした");
+									return false;
+								}
+							} else {
+								LOG(2, "此のページでやることはもうありません。");
+								break;
 							}
 						}
 					} else {
+						LOG(2, "ブックーマークはもうありません");
 						return true;
 					}
 				} else {//APIのエラー
-					System.err.println("[  ERR  ]" + AJAX_RESULT_JSON.get("message").asText());
+					LOG(1, AJAX_RESULT_JSON.get("message").asText());
 
 					return false;
 				}
