@@ -14,7 +14,7 @@ public class BOOKMARK_GET {
 
 		if(!AJAX_RESULT_JSON.get("error").asBoolean()){
 			//ブックマークの中身を回す
-			for(int I = 0; I < AJAX_RESULT_JSON.get("total").asInt(); I++){
+			for(int I = 0; I < 48; I++){
 				JsonNode ROW = AJAX_RESULT_JSON.get(I);
 				System.out.println("ブックマークから：" + ROW.get("title").asText());
 
