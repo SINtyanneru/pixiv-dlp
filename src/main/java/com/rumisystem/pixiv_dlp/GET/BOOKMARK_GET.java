@@ -41,7 +41,7 @@ public class BOOKMARK_GET {
 								boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ROW.get("id").asText());
 								//完了
 								if(DOWNLOAD){
-									LOG(0, I + "個目おｋ");
+									LOG(0,  ((OFFSET / LIMIT) + 1) +"/" + I + "個目おｋ");
 
 									//レートリミット対策、というか倫理的理由で5秒待つ
 									LOG(2, "5秒間待機します...");
