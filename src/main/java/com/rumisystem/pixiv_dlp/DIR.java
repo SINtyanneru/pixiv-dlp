@@ -124,7 +124,11 @@ public class DIR {
 			HashMap<String, String> TAG_INFO = new HashMap<>();
 
 			TAG_INFO.put("NAME", ROW.get("tag").asText());
-			TAG_INFO.put("ADD_USER", ROW.get("userId").asText());
+			if(ROW.get("userId") != null){
+				TAG_INFO.put("ADD_USER", ROW.get("userId").asText());
+			} else {
+				TAG_INFO.put("ADD_USER", null);
+			}
 			TAG_INFO.put("LOCKED", ROW.get("locked").asText());
 
 			TAG_LIST.add(TAG_INFO);
