@@ -43,9 +43,9 @@ public class BOOKMARK_GET {
 								if(DOWNLOAD){
 									LOG(0, I + "個目おｋ");
 
-									//レートリミット対策、というか倫理的理由で1秒待つ
-									LOG(2, "1秒間待機します...");
-									Thread.sleep(1000);
+									//レートリミット対策、というか倫理的理由で5秒待つ
+									LOG(2, "5秒間待機します...");
+									Thread.sleep(5000);
 								}else {
 									LOG(1, I + "ダウンロードできませんでした");
 									return false;
