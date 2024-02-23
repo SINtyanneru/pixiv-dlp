@@ -35,7 +35,7 @@ public class HTTP_REQUEST {
 	//GET
 	public String GET(){
 		try{
-			LOG(3, REQIEST_URI.toString() + "にGETリクエストを送信");
+			LOG(LOG_TYPE.PROCESS, REQIEST_URI.toString() + "にGETリクエストを送信");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -78,20 +78,22 @@ public class HTTP_REQUEST {
 
 				BR.close();
 
-				LOG(4, "HTTP通信が完了しました");
+				LOG(LOG_TYPE.PROCESS_END_OK, "HTTP通信が完了しました");
 				return RES_STRING.toString();
 			} else if (RES_CODE == 429) {
 				//レートリミット、10秒感待ってから最実行する
-				LOG(2, "レートリミット！10秒間待機します...");
+				LOG(LOG_TYPE.INFO, "レートリミット！10秒間待機します...");
 				Thread.sleep(10000);
 
 				//再実行
 				return GET();
 			} else if(RES_CODE == 404){
-				LOG(1, "404、イラストが存在しません");
+				LOG(LOG_TYPE.PROCESS_END_FAILED, "");
+				LOG(LOG_TYPE.FAILED, "404、イラストが存在しません");
 				return null;
 			} else {
-				LOG(1, "エラー" + RES_CODE + "です、処理を終了します");
+				LOG(LOG_TYPE.PROCESS_END_FAILED, "");
+				LOG(LOG_TYPE.FAILED, "エラー" + RES_CODE + "です、処理を終了します");
 				System.exit(1);
 				return null;
 			}
@@ -106,7 +108,7 @@ public class HTTP_REQUEST {
 	public void DOWNLOAD(String PATH){
 		try{
 			//名前が長すぎるので切り落としたよ
-			LOG(3, REQIEST_URI.toString().split("/")[REQIEST_URI.toString().split("/").length - 1] + "をダウンロード");
+			LOG(LOG_TYPE.PROCESS, REQIEST_URI.toString().split("/")[REQIEST_URI.toString().split("/").length - 1] + "をダウンロード");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -120,9 +122,9 @@ public class HTTP_REQUEST {
 			//レスポンスコード
 			int RES_CODE = HUC.getResponseCode();
 			if(RES_CODE == HttpURLConnection.HTTP_OK){
-				LOG(4, "");
+				LOG(LOG_TYPE.PROCESS_END_OK, "");
 
-				LOG(3, PATH + "へ保存中");
+				LOG(LOG_TYPE.PROCESS, PATH + "へ保存中");
 
 				//ファイルを保存する機構
 				InputStream IS = HUC.getInputStream();
@@ -133,17 +135,17 @@ public class HTTP_REQUEST {
 					OS.write(BUFFER, 0, BYTES_READ);
 				}
 
-				LOG(4, PATH + "");
+				LOG(LOG_TYPE.PROCESS_END_OK, PATH + "");
 			} else if (RES_CODE == 429) {
 				//レートリミット、10秒感待ってから最実行する
-				LOG(2, "レートリミット！10秒間待機します...");
+				LOG(LOG_TYPE.INFO, "レートリミット！10秒間待機します...");
 				Thread.sleep(10000);
 
 				//再実行
 				DOWNLOAD(PATH);
 			} else {
-				LOG(5, "");
-				LOG(1, "失敗:" + RES_CODE);
+				LOG(LOG_TYPE.PROCESS_END_FAILED, "");
+				LOG(LOG_TYPE.FAILED, "失敗:" + RES_CODE);
 			}
 		}catch (Exception EX){
 			EX.printStackTrace();
