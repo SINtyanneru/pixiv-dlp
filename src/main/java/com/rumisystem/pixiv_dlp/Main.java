@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 public class Main {
 	public static String  API_VERSION = "6c38cc7c723c6ae8b0dc7022d497a1ee751824c0";
 
+	public static int OK_JOB = 0;
+	public static int FAILED_JOB = 0;
+
 	public static void main(String[] args) throws JsonProcessingException {
 		//引数があるか
 		if(args.length != 0){
@@ -51,9 +54,13 @@ public class Main {
 						//完了
 						if(DOWNLOAD){
 							LOG(0, "すべての仕事が完了しました");
+							LOG(0, "完了：" + OK_JOB);
+							LOG(0, "失敗：" + FAILED_JOB);
 							System.exit(0);
 						}else {
 							LOG(1, "ダウンロードに失敗しました");
+							LOG(0, "完了：" + OK_JOB);
+							LOG(0, "失敗：" + FAILED_JOB);
 							System.exit(1);
 						}
 					} else {
@@ -72,9 +79,13 @@ public class Main {
 					//完了
 					if(DOWNLOAD){
 						LOG(0, "すべての仕事が完了しました");
+						LOG(0, "完了：" + OK_JOB);
+						LOG(0, "失敗：" + FAILED_JOB);
 						System.exit(0);
 					}else {
 						LOG(1, "ダウンロードに失敗しました");
+						LOG(0, "完了：" + OK_JOB);
+						LOG(0, "失敗：" + FAILED_JOB);
 						System.exit(1);
 					}
 					break;
@@ -98,22 +109,22 @@ public class Main {
 	public static void LOG(int LEVEL, String TEXT){
 		switch (LEVEL){
 			case 0:{
-				System.out.println("[  \u001B[32mOK\u001B[0m    ]" + TEXT);
+				System.out.println("[  \u001B[32mOK\u001B[0m  ]" + TEXT);
 				break;
 			}
 
 			case 1:{
-				System.out.println("[  \u001B[31mERR\u001B[0m   ]" + TEXT);
+				System.out.println("[\u001B[31mFAILED\u001B[0m]" + TEXT);
 				break;
 			}
 
 			case 2:{
-				System.out.println("[  INFO  ]" + TEXT);
+				System.out.println("[ INFO ]" + TEXT);
 				break;
 			}
 
 			case 3:{
-				System.out.println("[  ***   ]" + TEXT);
+				System.out.println("[ **** ]" + TEXT);
 				break;
 			}
 		}

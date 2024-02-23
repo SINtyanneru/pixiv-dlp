@@ -86,6 +86,9 @@ public class HTTP_REQUEST {
 
 				//再実行
 				return GET();
+			} else if(RES_CODE == 404){
+				LOG(1, "404、イラストが存在しません");
+				return null;
 			} else {
 				LOG(1, "エラー" + RES_CODE + "です、処理を終了します");
 				System.exit(1);
