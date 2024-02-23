@@ -3,16 +3,19 @@ ___
 Pixivのイラストを落とすために作った物、<BR>
 実は依頼品<BR>
 <BR>
-## 使い方
-___
-```bash
-pixiv-dlp "PixivのURL"
-```
-もしくは
-```bash
-java -jar ./build/libs/pixiv-dlp-1.0-SNAPSHOT-all.jar "PixivのURL"
-```
 
-## インストール方法
+## 何が出来る？
+イラストをダウンロードできます
+```bash
+java -jar pixiv-dlp.jar "イラストのURL"
+```
+また、ブックマークも取得できます
+```bash
+java -jar pixiv-dlp.jar "ブクマのURL"
+```
+--hideを付けることで、非公開もDLできます(自分のしかダウンロードできんぞ)<BR>
+cookie.txtにクッキーを書き込むことでログイン出来ます
+
+## ビルド方法
 ___
-いつかraptでインスこできるようにするはず
+自分で考えようか、言語はJAVAだ

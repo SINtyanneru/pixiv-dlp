@@ -1,1 +1,0 @@
-java -jar ./build/libs/pixiv-dlp-1.0-SNAPSHOT-all.jar $1
