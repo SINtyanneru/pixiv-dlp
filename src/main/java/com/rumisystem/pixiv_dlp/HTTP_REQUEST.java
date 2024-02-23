@@ -34,7 +34,7 @@ public class HTTP_REQUEST {
 	//GET
 	public String GET(){
 		try{
-			LOG(3, REQIEST_URI.toString() + "に対してGETリクエストを送信");
+			LOG(3, REQIEST_URI.toString() + "にGETリクエストを送信");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -105,7 +105,7 @@ public class HTTP_REQUEST {
 	public void DOWNLOAD(String PATH){
 		try{
 			//名前が長すぎるので切り落としたよ
-			LOG(3, REQIEST_URI.toString().split("/")[REQIEST_URI.toString().split("/").length - 1] + "をダウンロードします。。。");
+			LOG(3, REQIEST_URI.toString().split("/")[REQIEST_URI.toString().split("/").length - 1] + "をダウンロード");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -136,7 +136,7 @@ public class HTTP_REQUEST {
 				DOWNLOAD(PATH);
 			}
 
-			LOG(4, "ダウンロードが完了しました");
+			LOG(4, "");
 		}catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);
