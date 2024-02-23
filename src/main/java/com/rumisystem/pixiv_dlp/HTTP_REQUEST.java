@@ -77,7 +77,7 @@ public class HTTP_REQUEST {
 
 				BR.close();
 
-				LOG(0, "HTTP通信が完了しました");
+				LOG(4, "HTTP通信が完了しました");
 				return RES_STRING.toString();
 			} else if (RES_CODE == 429) {
 				//レートリミット、10秒感待ってから最実行する
@@ -104,7 +104,8 @@ public class HTTP_REQUEST {
 	//ダウンロード
 	public void DOWNLOAD(String PATH){
 		try{
-			LOG(3, REQIEST_URI.toString() + "をダウンロードします。。。");
+			//名前が長すぎるので切り落としたよ
+			LOG(3, REQIEST_URI.toString().split("/")[REQIEST_URI.toString().split("/").length - 1] + "をダウンロードします。。。");
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//GETリクエストだと主張する
@@ -135,7 +136,7 @@ public class HTTP_REQUEST {
 				DOWNLOAD(PATH);
 			}
 
-			LOG(0, "ダウンロードが完了しました");
+			LOG(4, "ダウンロードが完了しました");
 		}catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);

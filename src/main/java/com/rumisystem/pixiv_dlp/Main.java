@@ -127,6 +127,11 @@ public class Main {
 				System.out.println("[ **** ]" + TEXT);
 				break;
 			}
+
+			case 4:{
+				System.out.println("\u001B[1F[  \u001B[32mOK\u001B[0m  ]");
+				break;
+			}
 		}
 	}
 }
