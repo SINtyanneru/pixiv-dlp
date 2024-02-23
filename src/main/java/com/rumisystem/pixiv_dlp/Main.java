@@ -132,6 +132,11 @@ public class Main {
 				System.out.println("\u001B[1F[  \u001B[32mOK\u001B[0m  ]");
 				break;
 			}
+
+			case 5:{
+				System.out.println("\u001B[1F[\u001B[31mFAILED\u001B[0m]");
+				break;
+			}
 		}
 	}
 }

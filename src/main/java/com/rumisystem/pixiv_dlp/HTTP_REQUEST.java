@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.rumisystem.pixiv_dlp.Main.FAILED_JOB;
 import static com.rumisystem.pixiv_dlp.Main.LOG;
 
 public class HTTP_REQUEST {
@@ -119,6 +120,10 @@ public class HTTP_REQUEST {
 			//レスポンスコード
 			int RES_CODE = HUC.getResponseCode();
 			if(RES_CODE == HttpURLConnection.HTTP_OK){
+				LOG(4, "");
+
+				LOG(3, PATH + "へ保存中");
+
 				//ファイルを保存する機構
 				InputStream IS = HUC.getInputStream();
 				FileOutputStream OS = new FileOutputStream(PATH);
@@ -127,6 +132,8 @@ public class HTTP_REQUEST {
 				while((BYTES_READ = IS.read(BUFFER)) != -1){
 					OS.write(BUFFER, 0, BYTES_READ);
 				}
+
+				LOG(4, PATH + "");
 			} else if (RES_CODE == 429) {
 				//レートリミット、10秒感待ってから最実行する
 				LOG(2, "レートリミット！10秒間待機します...");
@@ -134,9 +141,10 @@ public class HTTP_REQUEST {
 
 				//再実行
 				DOWNLOAD(PATH);
+			} else {
+				LOG(5, "");
+				LOG(1, "失敗:" + RES_CODE);
 			}
-
-			LOG(4, "");
 		}catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);
