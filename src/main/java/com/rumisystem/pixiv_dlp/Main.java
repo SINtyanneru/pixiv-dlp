@@ -3,6 +3,7 @@ package com.rumisystem.pixiv_dlp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rumisystem.pixiv_dlp.GET.BOOKMARK_GET;
 import com.rumisystem.pixiv_dlp.GET.ILLUST_GET;
+import org.apache.commons.cli.*;
 
 import java.util.regex.Pattern;
 
@@ -12,12 +13,21 @@ public class Main {
 	public static int OK_JOB = 0;
 	public static int FAILED_JOB = 0;
 
-	public static void main(String[] args) throws JsonProcessingException {
+	public static void main(String[] args) throws JsonProcessingException, ParseException {
+		//非公開を取得
+		boolean HIDE = false;
+
+		// Options setup
+		Options options = new Options();
+		options.addOption("h", "hide", false, "非公開を取得");
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine commandLine = parser.parse(options, args);
+
 		//引数があるか
 		if(args.length != 0){
 			String DOWNLOAD_URL = "";				//ダウンロード先URL
 			int DOWNLOAD_TYPE = 0;					//なにをDLするか(1:イラスト/2:ブックマーク)
-			boolean HIDE = false;
 
 			//引数を全て読む
 			for(String ARG:args){
@@ -34,12 +44,11 @@ public class Main {
 						//ブックマーク
 						DOWNLOAD_TYPE = 2;
 					}
-				} else if(ARG.startsWith("--")){//設定
-					//非公開を取得
-					if(ARG.equals("--hide")){
-						HIDE = true;
-					}
 				}
+			}
+
+			if (commandLine.hasOption("h")) {
+				HIDE = true;
 			}
 
 			//実行する
@@ -92,7 +101,7 @@ public class Main {
 				}
 
 				default:{
-					LOG(2, "??????????????");
+					LOG(2, "不明な URL");
 					System.exit(255);
 				}
 			}
