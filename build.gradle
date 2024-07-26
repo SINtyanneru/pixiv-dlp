@@ -16,7 +16,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
 
 	//自作ライブラリ
-	implementation files('/home/rumisan/source/RumiJavaLib/build/libs/RumiJavaLib-1.0-all.jar')
+	implementation files('libs/RumiJavaLib-1.0-all.jar')
 }
 
 test {
