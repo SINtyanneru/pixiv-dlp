@@ -36,33 +36,7 @@ public class HTTP_REQUEST {
 	public String GET(){
 		try{
 			LOG(LOG_TYPE.PROCESS, REQIEST_URI.toString() + "にGETリクエストを送信");
-			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
-
-			//GETリクエストだと主張する
-			HUC.setRequestMethod("GET");
-
-			//ヘッダーを入れる
-			HUC.setRequestProperty("Host", "i.pximg.net");
-			HUC.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-			HUC.setRequestProperty("Referer", "https://www.pixiv.net/");
-
-			CookieManager COOKIE_MANAGER = new CookieManager();
-
-			File COOKIE_FILE = new File("./cookie.txt");
-			if(COOKIE_FILE.exists()){
-				StringBuilder COOKIE = new StringBuilder();
-
-				FileReader FR = new FileReader(COOKIE_FILE);
-				BufferedReader BR = new BufferedReader(FR);
-
-				String TEMP;
-				while ((TEMP = BR.readLine()) != null) {
-					COOKIE.append(TEMP);
-				}
-				BR.close();
-
-				HUC.setRequestProperty("Cookie", COOKIE.toString());
-			}
+			HttpURLConnection HUC = GET_HUC();
 
 			//レスポンスコード
 			int RES_CODE = HUC.getResponseCode();
@@ -102,6 +76,35 @@ public class HTTP_REQUEST {
 			System.exit(1);
 			return null;
 		}
+	}
+
+	private HttpURLConnection GET_HUC() throws IOException {
+		HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
+
+		//GETリクエストだと主張する
+		HUC.setRequestMethod("GET");
+
+		//ヘッダーを入れる
+		HUC.setRequestProperty("Host", "i.pximg.net");
+		HUC.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+		HUC.setRequestProperty("Referer", "https://www.pixiv.net/");
+
+		File COOKIE_FILE = new File("./cookie.txt");
+		if(COOKIE_FILE.exists()){
+			StringBuilder COOKIE = new StringBuilder();
+
+			FileReader FR = new FileReader(COOKIE_FILE);
+			BufferedReader BR = new BufferedReader(FR);
+
+			String TEMP;
+			while ((TEMP = BR.readLine()) != null) {
+				COOKIE.append(TEMP);
+			}
+			BR.close();
+
+			HUC.setRequestProperty("Cookie", COOKIE.toString());
+		}
+		return HUC;
 	}
 
 	//ダウンロード
