@@ -61,17 +61,7 @@ public class Main {
 						boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ILLUST_ID);
 
 						//完了
-						if(DOWNLOAD){
-							LOG(0, "すべての仕事が完了しました");
-							LOG(0, "完了：" + OK_JOB);
-							LOG(0, "失敗：" + FAILED_JOB);
-							System.exit(0);
-						}else {
-							LOG(1, "ダウンロードに失敗しました");
-							LOG(0, "完了：" + OK_JOB);
-							LOG(0, "失敗：" + FAILED_JOB);
-							System.exit(1);
-						}
+						DOWNLOAD_REPORT(DOWNLOAD);
 					} else {
 						LOG(1, "IDをセットしてください");
 						System.exit(1);
@@ -86,17 +76,7 @@ public class Main {
 					boolean DOWNLOAD = BOOKMARK_GET.BOOKMARK_ILLUST_DOWNLOAD(UID, HIDE);
 
 					//完了
-					if(DOWNLOAD){
-						LOG(0, "すべての仕事が完了しました");
-						LOG(0, "完了：" + OK_JOB);
-						LOG(0, "失敗：" + FAILED_JOB);
-						System.exit(0);
-					}else {
-						LOG(1, "ダウンロードに失敗しました");
-						LOG(0, "完了：" + OK_JOB);
-						LOG(0, "失敗：" + FAILED_JOB);
-						System.exit(1);
-					}
+					DOWNLOAD_REPORT(DOWNLOAD);
 					break;
 				}
 
@@ -107,6 +87,20 @@ public class Main {
 			}
 		} else {
 			HELP();
+		}
+	}
+
+	private static void DOWNLOAD_REPORT(boolean DOWNLOAD) {
+		if(DOWNLOAD) {
+			LOG(0, "すべての仕事が完了しました");
+			LOG(0, "完了：" + OK_JOB);
+			LOG(0, "失敗：" + FAILED_JOB);
+			System.exit(0);
+		} else {
+			LOG(1, "ダウンロードに失敗しました");
+			LOG(0, "完了：" + OK_JOB);
+			LOG(0, "失敗：" + FAILED_JOB);
+			System.exit(1);
 		}
 	}
 
