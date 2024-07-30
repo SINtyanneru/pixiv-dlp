@@ -1,6 +1,5 @@
 package com.rumisystem.pixiv_dlp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rumisystem.pixiv_dlp.GET.BOOKMARK_GET;
 import com.rumisystem.pixiv_dlp.GET.ILLUST_GET;
 import org.apache.commons.cli.*;
@@ -14,13 +13,14 @@ public class Main {
 	public static int OK_JOB = 0;
 	public static int FAILED_JOB = 0;
 
+	public static boolean HIDE = false;
+	public static String DOWNLOAD_URL = "";				//ダウンロード先URL
+	public static int DOWNLOAD_TYPE = 0;					//なにをDLするか (1:イラスト/2:ブックマーク)
+
 	private static final Pattern ARTWORK_PATTERN = Pattern.compile("https://www\\.pixiv\\.net(/[a-z]+)?/artworks/(\\d+)");
 	private static final Pattern BOOKMARKS_PATTERN = Pattern.compile("https://www\\.pixiv\\.net(/[a-z]+)?/users/(\\d+)/bookmarks/artworks");
 
-	public static void main(String[] args) throws JsonProcessingException, ParseException {
-		//非公開を取得
-		boolean HIDE = false;
-
+	public static void main(String[] args) throws ParseException {
 		// Options setup
 		Options options = new Options();
 		options.addOption("h", "hide", false, "非公開を取得");
@@ -28,29 +28,24 @@ public class Main {
 		CommandLineParser parser = new DefaultParser();
 		CommandLine commandLine = parser.parse(options, args);
 
-		//引数があるか
+		// 引数があるか
 		if (args.length == 0) {
 			HELP();
 			System.exit(0);
 		}
 
-		String DOWNLOAD_URL = "";				//ダウンロード先URL
-		int DOWNLOAD_TYPE = 0;					//なにをDLするか(1:イラスト/2:ブックマーク)
-
-		//引数を全て読む
+		// 引数を全て読む
 		for (String ARG: args) {
-			//URL
+			// URL
 			if (ARG.startsWith("https://www.pixiv.net/")) {
-				//URLをセット
+				// URLをセット
 				DOWNLOAD_URL = ARG;
 
-				//なにをダウンロードするか
+				// なにをダウンロードするか
 				if (Pattern.matches(ARTWORK_PATTERN.pattern(), ARG)) {
-					//イラスト
-					DOWNLOAD_TYPE = 1;
+					DOWNLOAD_TYPE = 1; // イラスト
 				} else if (Pattern.matches(BOOKMARKS_PATTERN.pattern(), ARG)) {
-					//ブックマーク
-					DOWNLOAD_TYPE = 2;
+					DOWNLOAD_TYPE = 2; // ブックマーク
 				}
 			}
 		}
@@ -60,59 +55,55 @@ public class Main {
 		}
 
 		//実行する
-		switch (DOWNLOAD_TYPE){
-			case 1:{
-				Matcher matcher = ARTWORK_PATTERN.matcher(DOWNLOAD_URL);
-
-				if (matcher.find()) {
-					if (matcher.group(2) != null) {
-						String ILLUST_ID = matcher.group(2); //イラストのID
-
-						//イラストを取得しダウンロードする
-						boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ILLUST_ID);
-
-						//完了
-						DOWNLOAD_REPORT(DOWNLOAD);
-					}
-				}
-
-				LOG(1, "IDをセットしてください");
-				System.exit(1);
-
-				break;
-			}
-
-			case 2:{
-				Matcher matcher = BOOKMARKS_PATTERN.matcher(DOWNLOAD_URL);
-
-				if (matcher.find()) {
-					if (matcher.group(2) != null) {
-						String ILLUST_ID = matcher.group(2); //イラストのID
-
-						//イラストを取得しダウンロードする
-						boolean DOWNLOAD = BOOKMARK_GET.BOOKMARK_ILLUST_DOWNLOAD(ILLUST_ID, HIDE);
-
-						//完了
-						DOWNLOAD_REPORT(DOWNLOAD);
-					}
-				}
-
-				LOG(1, "IDをセットしてください");
-				System.exit(1);
-
-				break;
-			}
-
-			default:{
-				LOG(2, "不明な URL");
-				System.exit(255);
-			}
-		}
-	}
+		try {
+			EXECUTE();
+		} catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
 	public static void HELP() {
 		System.out.println("pixiv-dlp V1.0");
 		System.out.println("制作：るみ/八木 瑠海 伸梧");
+	}
+
+	public static void EXECUTE() throws Exception {
+		boolean DOWNLOAD;
+		String ILLUST_ID;
+		Matcher matcher;
+
+		switch (DOWNLOAD_TYPE) {
+			case 1: {
+				matcher = ARTWORK_PATTERN.matcher(DOWNLOAD_URL);
+
+				if (matcher.find()) {
+					if (matcher.group(2) != null) {
+						ILLUST_ID = matcher.group(2); // イラストのID
+						DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ILLUST_ID); // イラストを取得しダウンロードする
+						DOWNLOAD_REPORT(DOWNLOAD); // 完了
+					}
+				}
+
+				break;
+			}
+
+			case 2: {
+				matcher = BOOKMARKS_PATTERN.matcher(DOWNLOAD_URL);
+
+				if (matcher.find()) {
+					if (matcher.group(2) != null) {
+						ILLUST_ID = matcher.group(2); // イラストのID
+						DOWNLOAD = BOOKMARK_GET.BOOKMARK_ILLUST_DOWNLOAD(ILLUST_ID, HIDE); // イラストを取得しダウンロードする
+						DOWNLOAD_REPORT(DOWNLOAD); // 完了
+					}
+				}
+
+				break;
+			}
+		}
+
+		LOG(2, "不明な URL");
+		System.exit(255);
 	}
 
 	private static void DOWNLOAD_REPORT(boolean DOWNLOAD) {
@@ -130,33 +121,33 @@ public class Main {
 	}
 
 	public static void LOG(int LEVEL, String TEXT){
-		switch (LEVEL){
-			case 0:{
+		switch (LEVEL) {
+			case 0: {
 				System.out.println("[  \u001B[32mOK\u001B[0m  ]" + TEXT);
 				break;
 			}
 
-			case 1:{
+			case 1: {
 				System.out.println("[\u001B[31mFAILED\u001B[0m]" + TEXT);
 				break;
 			}
 
-			case 2:{
+			case 2: {
 				System.out.println("[ INFO ]" + TEXT);
 				break;
 			}
 
-			case 3:{
+			case 3: {
 				System.out.println("[ **** ]" + TEXT);
 				break;
 			}
 
-			case 4:{
+			case 4: {
 				System.out.println("\u001B[1F[  \u001B[32mOK\u001B[0m  ]");
 				break;
 			}
 
-			case 5:{
+			case 5: {
 				System.out.println("\u001B[1F[\u001B[31mFAILED\u001B[0m]");
 				break;
 			}
