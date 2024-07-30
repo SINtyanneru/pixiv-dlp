@@ -7,15 +7,15 @@ import com.rumisystem.pixiv_dlp.HTTP_REQUEST;
 import static com.rumisystem.pixiv_dlp.Main.LOG;
 
 public class BOOKMARK_GET {
-	public static boolean BOOKMARK_ILLUST_DOWNLOAD(String UID, boolean HIDE_BOOKMARK) throws Exception {
+	public static int BOOKMARK_ILLUST_DOWNLOAD(String UID, boolean HIDE_BOOKMARK) throws Exception {
 		int OFFSET = 0;
 		int LIMIT = 48;
 		boolean LOOP = true;
 
-		//ブックマークの種類
+		// ブックマークの種類
 		String REST = "show";
 
-		//非公開のをダウンロードするか
+		// 非公開のをダウンロードするか
 		if (HIDE_BOOKMARK) {
 			REST = "hide";
 		}
@@ -38,16 +38,16 @@ public class BOOKMARK_GET {
 								LOG(3, "ブックマークからダウンロードします");
 
 								// イラストを取得しダウンロードする
-								boolean DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ROW.get("id").asText());
+								int DOWNLOAD = ILLUST_GET.ILLUST_DOWNLOAD(ROW.get("id").asText());
 
 								// 完了
-								if (DOWNLOAD) {
+								if (DOWNLOAD == 1) {
 									LOG(0,  ((OFFSET / LIMIT) + 1) +"/" + (I + 1) + "個目おｋ");
 
 									// レートリミット対策、というか倫理的理由で5秒待つ
 									LOG(2, "5秒間待機します...");
 									Thread.sleep(5000);
-								} else {
+								} else if (DOWNLOAD == 0) {
 									LOG(1, I + ":ダウンロードできませんでした");
 								}
 							} else {
@@ -57,11 +57,11 @@ public class BOOKMARK_GET {
 						}
 					} else {
 						LOG(2, "ブックーマークはもうありません");
-						return true;
+						return 1;
 					}
 				} else { // APIのエラー
 					LOG(1, AJAX_RESULT_JSON.get("message").asText());
-					return false;
+					return 0;
 				}
 			}
 
@@ -70,6 +70,6 @@ public class BOOKMARK_GET {
 		}
 
 		// 終了
-		return true;
+		return 1;
 	}
 }

@@ -4,6 +4,8 @@ import com.rumisystem.pixiv_dlp.GET.BOOKMARK_GET;
 import com.rumisystem.pixiv_dlp.GET.ILLUST_GET;
 import org.apache.commons.cli.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +21,7 @@ public class Main {
 
 	private static final Pattern ARTWORK_PATTERN = Pattern.compile("https://www\\.pixiv\\.net(/[a-z]+)?/artworks/(\\d+)");
 	private static final Pattern BOOKMARKS_PATTERN = Pattern.compile("https://www\\.pixiv\\.net(/[a-z]+)?/users/(\\d+)/bookmarks/artworks");
+	private static final Pattern TAG_PATTERN = Pattern.compile("https://www\\.pixiv\\.net(/[a-z]+)?/tags/([^/]+)");
 
 	public static void main(String[] args) throws ParseException {
 		// Options setup
@@ -68,7 +71,7 @@ public class Main {
 	}
 
 	public static void EXECUTE() throws Exception {
-		boolean DOWNLOAD;
+		int DOWNLOAD;
 		String ILLUST_ID;
 		Matcher matcher;
 
@@ -106,8 +109,8 @@ public class Main {
 		System.exit(255);
 	}
 
-	private static void DOWNLOAD_REPORT(boolean DOWNLOAD) {
-		if (DOWNLOAD) {
+	private static void DOWNLOAD_REPORT(int DOWNLOAD) {
+		if (DOWNLOAD > 0) {
 			LOG(0, "すべての仕事が完了しました");
 			LOG(0, "完了：" + OK_JOB);
 			LOG(0, "失敗：" + FAILED_JOB);
@@ -152,5 +155,16 @@ public class Main {
 				break;
 			}
 		}
+	}
+
+	public static boolean CHECK_FFMPEG() {
+		if(!Files.exists(Path.of("/bin/ffmpeg"))){
+			LOG(1, "FFMPEGがありません、スキップします");
+			FAILED_JOB++;
+
+			return false;
+		}
+
+		return true;
 	}
 }
