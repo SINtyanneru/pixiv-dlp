@@ -146,12 +146,12 @@ public class Main {
 			}
 
 			case 4: {
-				System.out.println("\u001B[1F[  \u001B[32mOK\u001B[0m  ]");
+				System.out.println("\u001B[1F[  \u001B[32mOK\u001B[0m  ]" + TEXT);
 				break;
 			}
 
 			case 5: {
-				System.out.println("\u001B[1F[\u001B[31mFAILED\u001B[0m]");
+				System.out.println("\u001B[1F[\u001B[31mFAILED\u001B[0m]" + TEXT);
 				break;
 			}
 		}

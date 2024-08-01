@@ -3,7 +3,7 @@ package com.rumisystem.pixiv_dlp.GET;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.pixiv_dlp.HTTP_REQUEST;
-import com.rumisystem.pixiv_dlp.LOG_TYPE;
+import com.rumisystem.pixiv_dlp.ENUM.LOG_TYPE;
 
 import com.rumisystem.pixiv_dlp.DL.*;
 
