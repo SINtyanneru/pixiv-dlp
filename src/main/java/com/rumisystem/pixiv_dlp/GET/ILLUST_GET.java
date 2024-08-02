@@ -13,32 +13,33 @@ import static com.rumisystem.pixiv_dlp.Main.*;
 
 public class ILLUST_GET {
 	public static int ILLUST_DOWNLOAD(String ILLUST_ID) throws Exception {
-		String AJAX_RESULT = new HTTP_REQUEST("https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "?lang=ja").GET();
-		ObjectMapper OBJ_MAPPER;
-		JsonNode AJAX_RESULT_JSON;
+		File ILLUST_PATH = new File("pixiv/works/" + ILLUST_ID);
 
-		// nullちぇっく
-		if (AJAX_RESULT == null) {
-			LOG(1, "処理をスキップします");
-			FAILED_JOB++;
+		if (!ILLUST_PATH.exists()) {
+			String AJAX_RESULT = new HTTP_REQUEST("https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "?lang=ja").GET();
+			ObjectMapper OBJ_MAPPER;
+			JsonNode AJAX_RESULT_JSON;
 
-			return 0;
-		}
+			// nullちぇっく
+			if (AJAX_RESULT == null) {
+				LOG(1, "処理をスキップします");
+				FAILED_JOB++;
 
-		OBJ_MAPPER = new ObjectMapper();
-		AJAX_RESULT_JSON = OBJ_MAPPER.readTree(AJAX_RESULT);
+				return 0;
+			}
 
-		if (!AJAX_RESULT_JSON.get("error").asBoolean()) {
-			JsonNode BODY_JSON = AJAX_RESULT_JSON.get("body");
-			String ILLUST_TITLE = BODY_JSON.get("title").asText();
-			int ILLUST_PAGE_COUNT = BODY_JSON.get("pageCount").asInt();
-			String ILLUST_C_DATE = BODY_JSON.get("createDate").asText();
-			String ILLUST_U_DATE = BODY_JSON.get("uploadDate").asText();
-			String AUTHOR_ID = BODY_JSON.get("userId").asText();
+			OBJ_MAPPER = new ObjectMapper();
+			AJAX_RESULT_JSON = OBJ_MAPPER.readTree(AJAX_RESULT);
 
-			File ILLUST_FILE = new File("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID);
+			if (!AJAX_RESULT_JSON.get("error").asBoolean()) {
+				JsonNode BODY_JSON = AJAX_RESULT_JSON.get("body");
+				String ILLUST_TITLE = BODY_JSON.get("title").asText();
+				int ILLUST_PAGE_COUNT = BODY_JSON.get("pageCount").asInt();
+				String ILLUST_C_DATE = BODY_JSON.get("createDate").asText();
+				String ILLUST_U_DATE = BODY_JSON.get("uploadDate").asText();
+				String AUTHOR_ID = BODY_JSON.get("userId").asText();
 
-			if (!ILLUST_FILE.exists()) {
+
 				// 適当に情報を吐く
 				LOG(2, "┌──────────────────────────────────────────┐");
 				LOG(2, "│ﾀｲﾄﾙ      :" + ILLUST_TITLE);
@@ -58,14 +59,14 @@ public class ILLUST_GET {
 					return 0;
 				}
 			} else {
-				LOG(LOG_TYPE.OK, "すでに存在するのでスキップしました");
-				return 2;
+				LOG(1, "APIエラー「" + AJAX_RESULT_JSON.get("message").asText() + "」");
+				FAILED_JOB++;
+
+				return 0;
 			}
 		} else {
-			LOG(1, "APIエラー「" + AJAX_RESULT_JSON.get("message").asText() + "」");
-			FAILED_JOB++;
-
-			return 0;
+			LOG(LOG_TYPE.OK, "すでに存在するのでスキップしました");
+			return 2;
 		}
 	}
 }

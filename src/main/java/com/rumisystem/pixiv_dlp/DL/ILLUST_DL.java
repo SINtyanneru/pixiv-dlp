@@ -26,7 +26,7 @@ public class ILLUST_DL {
                 new DIR(AUTHOR_ID, ILLUST_ID, BODY_JSON);
 
                 // ページをダウンロード(分かりやすくファイルのページ番号を+1する)
-                new HTTP_REQUEST(ORIGIN_ILLUST_URL).DOWNLOAD("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/" + (i + 1) + ".png");
+                new HTTP_REQUEST(ORIGIN_ILLUST_URL).DOWNLOAD("pixiv/works/" + ILLUST_ID + "/" + (i + 1) + ".png");
             }
 
             OK_JOB++;

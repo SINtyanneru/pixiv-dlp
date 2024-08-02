@@ -24,6 +24,8 @@ public class UGOIRA_DL {
             return 0;
         }
 
+        String BASE_PATH = "pixiv/works/" + ILLUST_ID;
+
         // うごイラの情報を落とす
         String AJAX_UGOIRA_META = new HTTP_REQUEST("https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "/ugoira_meta").GET();
         JsonNode UGOIRA_META = new ObjectMapper().readTree(AJAX_UGOIRA_META);
@@ -40,14 +42,14 @@ public class UGOIRA_DL {
         new DIR(AUTHOR_ID, ILLUST_ID, BODY_JSON);
 
         // ZIPを落とす
-        new HTTP_REQUEST(UGOIRA_META.get("body").get("originalSrc").asText()).DOWNLOAD("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/origin.zip");
+        new HTTP_REQUEST(UGOIRA_META.get("body").get("originalSrc").asText()).DOWNLOAD(BASE_PATH + "/origin.zip");
 
         // ZIPを解凍
-        ZipInputStream ZIS = new ZipInputStream(Files.newInputStream(Path.of("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/origin.zip")));
+        ZipInputStream ZIS = new ZipInputStream(Files.newInputStream(Path.of(BASE_PATH + "/origin.zip")));
         ZipEntry E;
 
         while ((E = ZIS.getNextEntry()) != null) {
-            Files.write(Path.of("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/" + E.getName()), ZIS.readAllBytes());
+            Files.write(Path.of(BASE_PATH + "/" + E.getName()), ZIS.readAllBytes());
         }
 
         return PROCESS_UGOIRA(UGOIRA_META, AUTHOR_ID, ILLUST_ID);
@@ -66,7 +68,9 @@ public class UGOIRA_DL {
             FRAME_TEXT.append("duration ").append(TIME).append("\n");
         }
 
-        new FILER(new File("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/frame.txt")).WRITE_STRING(FRAME_TEXT.toString());
+        String BASE_PATH = "pixiv/works/" + ILLUST_ID;
+
+        new FILER(new File(BASE_PATH + "/frame.txt")).WRITE_STRING(FRAME_TEXT.toString());
 
         // ffmpeg
         LOG(3, "結合中");
@@ -76,19 +80,20 @@ public class UGOIRA_DL {
                 "/bin/ffmpeg",
                 "-f", "concat",
                 "-safe", "0",
-                "-i", "./pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/frame.txt",
-                "-plays", "0", "./pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/output.apng"
+                "-i", "./" + BASE_PATH + "/frame.txt",
+                "-plays", "0", "./" + BASE_PATH + "/output.apng"
         };
 
         String[] GIF_CMD = new String[] {
                 "/bin/ffmpeg",
-                "-i", "./pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/output.apng",
+                "-i", "./" + BASE_PATH + "/output.apng",
                 "-filter_complex", "[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse",
-                "./pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/output.gif"
+                "./" + BASE_PATH + "/output.gif"
         };
 
         Process APNG_PROCESS = new ProcessBuilder(APNG_CMD).start();
         int APNG_RESULT = APNG_PROCESS.waitFor();
+
         Process GIF_PROCESS = new ProcessBuilder(GIF_CMD).start();
         int GIF_RESULT = GIF_PROCESS.waitFor();
 
@@ -100,19 +105,19 @@ public class UGOIRA_DL {
 
             // 連番ファイル
             for (int I = 0; I < UGOIRA_FRAMES.size(); I++) {
-                String NAME = "pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/" + UGOIRA_FRAMES.get(I).get("file").asText();
+                String NAME = BASE_PATH + "/" + UGOIRA_FRAMES.get(I).get("file").asText();
                 new File(NAME).delete();
 
                 LOG(0, "削除：" + NAME);
             }
 
             // frame.txt
-            new File("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/frame.txt").delete();
-            LOG(0, "削除：" + "pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/frame.txt");
+            new File(BASE_PATH + "/frame.txt").delete();
+            LOG(0, "削除：" + BASE_PATH + "/frame.txt");
 
             // origin.zip
-            new File("pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/origin.zip").delete();
-            LOG(0, "削除：" + "pixiv/" + AUTHOR_ID + "/" + ILLUST_ID + "/origin.zip");
+            new File(BASE_PATH + "/origin.zip").delete();
+            LOG(0, "削除：" + BASE_PATH + "/origin.zip");
 
             // 終わり
             LOG(0, "完了");
