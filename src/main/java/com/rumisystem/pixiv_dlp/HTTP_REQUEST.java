@@ -4,29 +4,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rumisystem.pixiv_dlp.ENUM.LOG_TYPE;
 
 import java.io.*;
-import java.net.CookieManager;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpRequest;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.rumisystem.pixiv_dlp.Main.FAILED_JOB;
 import static com.rumisystem.pixiv_dlp.Main.LOG;
 
 public class HTTP_REQUEST {
-	private URL REQIEST_URI = null;
+	private URL REQUEST_URI = null;
 
 	public HTTP_REQUEST(String INPUT_REQ_URL){
-		try{
-			REQIEST_URI = new URL(INPUT_REQ_URL);
-		}catch (Exception EX) {
+		try {
+			REQUEST_URI = new URL(INPUT_REQ_URL);
+		} catch (Exception EX) {
 			System.err.println(EX);
 			System.exit(1);
 		}
@@ -35,13 +31,13 @@ public class HTTP_REQUEST {
 	//GET
 	public String GET(){
 		try{
-			LOG(LOG_TYPE.PROCESS, REQIEST_URI.toString() + "にGETリクエストを送信");
+			LOG(LOG_TYPE.PROCESS, REQUEST_URI.toString() + "にGETリクエストを送信");
 			HttpURLConnection HUC = GET_HUC();
 
 			//レスポンスコード
 			int RES_CODE = HUC.getResponseCode();
 
-			if(RES_CODE == 200){
+			if (RES_CODE == 200) {
 				BufferedReader BR = new BufferedReader(new InputStreamReader(HUC.getInputStream(), StandardCharsets.UTF_8));
 				StringBuilder RES_STRING = new StringBuilder();
 
@@ -71,7 +67,7 @@ public class HTTP_REQUEST {
 				System.exit(1);
 				return null;
 			}
-		}catch (Exception EX){
+		} catch (Exception EX){
 			EX.printStackTrace();
 			System.exit(1);
 			return null;
@@ -79,7 +75,7 @@ public class HTTP_REQUEST {
 	}
 
 	private HttpURLConnection GET_HUC() throws IOException {
-		HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
+		HttpURLConnection HUC = (HttpURLConnection) REQUEST_URI.openConnection();
 
 		//GETリクエストだと主張する
 		HUC.setRequestMethod("GET");
@@ -111,8 +107,8 @@ public class HTTP_REQUEST {
 	public void DOWNLOAD(String PATH){
 		try{
 			//名前が長すぎるので切り落としたよ
-			LOG(LOG_TYPE.PROCESS, REQIEST_URI.toString().split("/")[REQIEST_URI.toString().split("/").length - 1] + "をダウンロード");
-			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
+			LOG(LOG_TYPE.PROCESS, REQUEST_URI.toString().split("/")[REQUEST_URI.toString().split("/").length - 1] + "をダウンロード");
+			HttpURLConnection HUC = (HttpURLConnection) REQUEST_URI.openConnection();
 
 			//GETリクエストだと主張する
 			HUC.setRequestMethod("GET");
@@ -126,7 +122,6 @@ public class HTTP_REQUEST {
 			int RES_CODE = HUC.getResponseCode();
 			if(RES_CODE == HttpURLConnection.HTTP_OK){
 				LOG(LOG_TYPE.PROCESS_END_OK, "");
-
 				LOG(LOG_TYPE.PROCESS, PATH + "へ保存中");
 
 				//ファイルを保存する機構
@@ -138,7 +133,7 @@ public class HTTP_REQUEST {
 					OS.write(BUFFER, 0, BYTES_READ);
 				}
 
-				LOG(LOG_TYPE.PROCESS_END_OK, PATH + "");
+				LOG(LOG_TYPE.PROCESS_END_OK, PATH);
 			} else if (RES_CODE == 429) {
 				//レートリミット、10秒感待ってから最実行する
 				LOG(LOG_TYPE.INFO, "レートリミット！10秒間待機します...");
@@ -157,11 +152,10 @@ public class HTTP_REQUEST {
 	}
 
 	public List<String> JSON_KEYS_GET(String json, ObjectMapper mapper) throws JsonMappingException, JsonProcessingException {
-
 		List<String> keys = new ArrayList<>();
 		JsonNode jsonNode = mapper.readTree(json);
 		Iterator<String> iterator = jsonNode.fieldNames();
-		iterator.forEachRemaining(e -> keys.add(e));
+		iterator.forEachRemaining(keys::add);
 		return keys;
 	}
 }

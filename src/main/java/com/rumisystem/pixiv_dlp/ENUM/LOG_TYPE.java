@@ -1,4 +1,4 @@
-package com.rumisystem.pixiv_dlp;
+package com.rumisystem.pixiv_dlp.ENUM;
 
 public class LOG_TYPE {
 	public static final int OK = 0;
