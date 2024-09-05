@@ -4,15 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.pixiv_dlp.DIR;
+import com.rumisystem.pixiv_dlp.ENUM.LOG_TYPE;
 import com.rumisystem.pixiv_dlp.HTTP_REQUEST;
 
 import static com.rumisystem.pixiv_dlp.Main.*;
 
 public class ILLUST_DL {
-	public static int DOWNLOAD(JsonNode BODY_JSON, String ILLUST_ID, String AUTHOR_ID, int ILLUST_PAGE_COUNT)
-			throws JsonProcessingException {
-		String AJAX_ILLUST_ALL_PAGE = new HTTP_REQUEST(
-				"https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "/pages?lang=ja").GET();
+	public static int DOWNLOAD(JsonNode BODY_JSON, String ILLUST_ID, String AUTHOR_ID, int ILLUST_PAGE_COUNT) throws JsonProcessingException {
+		String AJAX_ILLUST_ALL_PAGE = new HTTP_REQUEST("https://www.pixiv.net/ajax/illust/" + ILLUST_ID + "/pages?lang=ja").GET();
 
 		// nullちぇっく
 		if (AJAX_ILLUST_ALL_PAGE != null) {
