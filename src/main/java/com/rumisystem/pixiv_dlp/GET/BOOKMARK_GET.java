@@ -42,13 +42,13 @@ public class BOOKMARK_GET {
 
 								// 完了
 								if (DOWNLOAD == 1) {
-									LOG(0,  ((OFFSET / LIMIT) + 1) +"/" + (I + 1) + "個目おｋ");
+									LOG(0,  ((OFFSET / LIMIT) + 1) + "/" + (I + 1) + "個目おｋ");
 
 									// レートリミット対策、というか倫理的理由で5秒待つ
 									LOG(2, "5秒間待機します...");
 									Thread.sleep(5000);
 								} else if (DOWNLOAD == 0) {
-									LOG(1, I + ":ダウンロードできませんでした");
+									LOG(1, "#" + I + ": ダウンロードできませんでした");
 								}
 							} else {
 								LOG(2, "此のページでやることはもうありません。");

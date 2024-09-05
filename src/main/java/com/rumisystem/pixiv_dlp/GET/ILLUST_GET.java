@@ -41,12 +41,18 @@ public class ILLUST_GET {
 
 
 				// 適当に情報を吐く
-				LOG(2, "┌──────────────────────────────────────────┐");
-				LOG(2, "│ﾀｲﾄﾙ      :" + ILLUST_TITLE);
-				LOG(2, "│ﾍﾟｰｼﾞ     :" + ILLUST_PAGE_COUNT);
-				LOG(2, "│ｻｸｾｲﾋﾞ    :" + ILLUST_C_DATE);
-				LOG(2, "│ｺｳｼﾝﾋﾞ    :" + ILLUST_U_DATE);
-				LOG(2, "└──────────────────────────────────────────┘");
+				ILLUST_INFO(ILLUST_TITLE, ILLUST_PAGE_COUNT, ILLUST_C_DATE, ILLUST_U_DATE);
+
+				switch (BODY_JSON.get("illustType").asInt()) {
+					// ILLUST＆漫画
+					case 0:
+					case 1:
+						return ILLUST_DL.DOWNLOAD(BODY_JSON, ILLUST_ID, AUTHOR_ID, ILLUST_PAGE_COUNT);
+
+					// うごイラ
+					case 2:
+						return UGOIRA_DL.DOWNLOAD(BODY_JSON, ILLUST_ID, AUTHOR_ID);
+				}
 
 				if (BODY_JSON.get("illustType").asInt() == 0) {
 					return ILLUST_DL.DOWNLOAD(BODY_JSON, ILLUST_ID, AUTHOR_ID, ILLUST_PAGE_COUNT);
@@ -68,5 +74,14 @@ public class ILLUST_GET {
 			LOG(LOG_TYPE.OK, "すでに存在するのでスキップしました");
 			return 2;
 		}
+	}
+
+	private static void ILLUST_INFO(String ILLUST_TITLE, int ILLUST_PAGE_COUNT, String ILLUST_C_DATE, String ILLUST_U_DATE) {
+		LOG(2, "┌──────────────────────────────────────────┐");
+		LOG(2, "│ﾀｲﾄﾙ      :" + ILLUST_TITLE);
+		LOG(2, "│ﾍﾟｰｼﾞ     :" + ILLUST_PAGE_COUNT);
+		LOG(2, "│ｻｸｾｲﾋﾞ    :" + ILLUST_C_DATE);
+		LOG(2, "│ｺｳｼﾝﾋﾞ    :" + ILLUST_U_DATE);
+		LOG(2, "└──────────────────────────────────────────┘");
 	}
 }

@@ -114,9 +114,11 @@ public class HTTP_REQUEST {
 			HUC.setRequestMethod("GET");
 
 			//ヘッダーを入れる
+			HUC.setRequestProperty("Accept", "image/avif,image/jxl,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5");
+			HUC.setRequestProperty("Accept-Encoding", "gzip, deflate, br, zstd");
 			HUC.setRequestProperty("Host", "i.pximg.net");
 			HUC.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-			HUC.setRequestProperty("Referer", "https://www.pixiv.net/");
+			HUC.setRequestProperty("Referer", "https://pixiv.net");
 
 			//レスポンスコード
 			int RES_CODE = HUC.getResponseCode();
