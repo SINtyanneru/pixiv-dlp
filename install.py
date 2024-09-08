@@ -1,8 +1,8 @@
 import os
 
-BUILD_DIR = "./build/libs/"
+BUILD_DIR = "./target/"
 BIN_DIR = "/usr/local/bin/"
-JAR_FILE_NAME = "pixiv-dlp-1.0-SNAPSHOT-all.jar"
+JAR_FILE_NAME = "pixiv_dlp-2.0-jar-with-dependencies.jar"
 
 #インスコする関数
 def INSTALL():
