@@ -158,7 +158,7 @@ public class Main {
 	}
 
 	public static boolean CHECK_FFMPEG() {
-		if(!Files.exists(Path.of("/bin/ffmpeg"))){
+		if(!Files.exists(Path.of("/bin/ffmpeg")) && !Files.exists(Path.of("ffmpeg.exe"))){
 			LOG(1, "FFMPEGがありません、スキップします");
 			FAILED_JOB++;
 

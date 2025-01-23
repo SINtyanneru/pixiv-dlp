@@ -79,10 +79,10 @@ public class UGOIRA_DL {
 		LOG(3, "結合中");
 
 		// コマンド容易
-		String[] APNG_CMD = new String[] { "/bin/ffmpeg", "-f", "concat", "-safe", "0", "-i",
+		String[] APNG_CMD = new String[] { "ffmpeg", "-f", "concat", "-safe", "0", "-i",
 				"./" + BASE_PATH + "/frame.txt", "-plays", "0", "./" + BASE_PATH + "/output.apng" };
 
-		String[] GIF_CMD = new String[] { "/bin/ffmpeg", "-i", "./" + BASE_PATH + "/output.apng", "-filter_complex",
+		String[] GIF_CMD = new String[] { "ffmpeg", "-i", "./" + BASE_PATH + "/output.apng", "-filter_complex",
 				"[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse", "./" + BASE_PATH + "/output.gif" };
 
 		Process APNG_PROCESS = new ProcessBuilder(APNG_CMD).start();
