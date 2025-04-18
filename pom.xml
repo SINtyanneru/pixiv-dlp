@@ -5,7 +5,7 @@
 
 	<groupId>com.rumisystem</groupId>
 	<artifactId>pixiv_dlp</artifactId>
-	<version>2.0</version>
+	<version>2.5</version>
 	<packaging>jar</packaging>
 
 	<name>pixiv_dlp</name>
